@@ -6,6 +6,7 @@ const bodyParser = require("body-parser");
 const app = Express();
 
 const UserRoute = require("./Routes/user-routes");
+app.use(Express.static('public'));
 
 app.use(Cors());
 app.use(Express.json());
@@ -24,5 +25,5 @@ mongoose
   .catch((err) => console.log("bonjour", err));
 
 app.listen(process.env.PORT, () =>
-  console.log(`The server is running on http://localhost:${process.env.PORT}`)
+  console.log(`The server is running on ${process.env.DOMAIN_NAME}`)
 );

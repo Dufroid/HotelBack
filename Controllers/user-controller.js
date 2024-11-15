@@ -4,6 +4,8 @@ const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 const Grid = require("gridfs-stream");
 require("dotenv").config();
+const stripe = require('stripe')(process.env.STRIPE_KEY);
+
 
 const conn = mongoose.createConnection(process.env.URI, {
   useNewUrlParser: true,
@@ -327,6 +329,37 @@ const getSpecificNoti = async (req, res) => {
   } catch (error) {}
 };
 
+const UpcomingEvent = async(req, res)=>{
+  const {Interested} = req.body
+ res.json({Interested})
+}
+
+
+
+const createSessionForm = async (req,res)=>{
+  const session = await stripe.checkout.sessions.create({
+    ui_mode: 'embedded',
+    line_items: [
+      {
+        // Provide the exact Price ID (for example, pr_1234) of the product you want to sell
+        price: 'price_1QLEBdLtLaBG2F3XuzpQNrR7',
+        quantity: 1,
+      },
+    ],
+    mode: 'payment',
+    return_url: `${process.env.DOMAIN_NAME}/return?session_id={CHECKOUT_SESSION_ID}`,
+  });
+  res.send({clientSecret: session.client_secret});
+}
+const session_status = async (req,res)=>{
+  const session = await stripe.checkout.sessions.retrieve(req.query.session_id);
+
+  res.send({
+    status: session.status,
+    customer_email: session.customer_details.email
+  });
+}
+
 module.exports = {
   handleCode,
   Connect,
@@ -347,4 +380,7 @@ module.exports = {
   readNoti,
   getSpecificNoti,
   deleteNoti,
+  UpcomingEvent,
+  createSessionForm,
+  session_status
 };
