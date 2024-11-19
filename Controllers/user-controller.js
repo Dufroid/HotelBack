@@ -341,8 +341,8 @@ const checkout = async (req,res)=>{
       },
     ],
     mode: 'payment',
-    success_url:"http://localhost:3000/success",
-    cancel_url:"http://localhost:3000/cancel",
+    success_url:"https://joliereve.netlify.app/success",
+    cancel_url:"https://joliereve.netlify.app/cancel",
 
   });
   res.json({url:session.url});
