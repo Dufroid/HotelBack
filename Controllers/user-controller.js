@@ -5,15 +5,11 @@ const jwt = require("jsonwebtoken");
 const Grid = require("gridfs-stream");
 require("dotenv").config();
 const stripe = require('stripe')(process.env.STRIPE_KEY);
-
-
 const conn = mongoose.createConnection(process.env.URI, {
   useNewUrlParser: true,
   useUnifiedTopology: true,
 });
 const User = require("../Models/User-model");
-
-const Notification = require("../Models/Notification");
 const Posts = require("../Models/Post-model");
 const { Code } = require("mongodb");
 const Messages = require("../Models/Message-model");
@@ -34,8 +30,6 @@ const handleCode = async (req, res) => {
 //Checking admin code
 const Connect = async (req, res) => {
   const { Code } = req.body;
-
-  console.log(Code);
 
   try {
     const user = await User.findOne({ Code: Code });
@@ -336,20 +330,22 @@ const UpcomingEvent = async(req, res)=>{
 
 
 
-const createSessionForm = async (req,res)=>{
+const checkout = async (req,res)=>{
+
   const session = await stripe.checkout.sessions.create({
-    ui_mode: 'embedded',
     line_items: [
       {
         // Provide the exact Price ID (for example, pr_1234) of the product you want to sell
-        price: 'price_1QLEBdLtLaBG2F3XuzpQNrR7',
-        quantity: 1,
+        price: req.body.credential.price,
+        quantity: req.body.Chambre,
       },
     ],
     mode: 'payment',
-    return_url: `${process.env.DOMAIN_NAME}/return?session_id={CHECKOUT_SESSION_ID}`,
+    success_url:"http://localhost:3000/success",
+    cancel_url:"http://localhost:3000/cancel",
+
   });
-  res.send({clientSecret: session.client_secret});
+  res.json({url:session.url});
 }
 const session_status = async (req,res)=>{
   const session = await stripe.checkout.sessions.retrieve(req.query.session_id);
@@ -381,6 +377,6 @@ module.exports = {
   getSpecificNoti,
   deleteNoti,
   UpcomingEvent,
-  createSessionForm,
+  checkout,
   session_status
 };

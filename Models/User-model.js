@@ -9,10 +9,7 @@ let User = new Schema(
     Code: {
       type: String,
     },
-    User: {
-      type: Schema.Types.ObjectId,
-      ref: "User",
-    },
+  
     SelectedLang: {
       type: String,
       default: "French",

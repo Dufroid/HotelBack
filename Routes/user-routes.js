@@ -23,7 +23,7 @@ const {
   getSpecificNoti,
   deleteNoti,
   UpcomingEvent,
-  createSessionForm,
+  checkout,
   session_status
 } = require("../Controllers/user-controller");
 const { auth, setPost } = require("../Middleware/auth");
@@ -48,7 +48,7 @@ router.put("/readNoti/:id", readNoti);
 router.get("/getSpecificNoti/:id", getSpecificNoti);
 router.put("/deleteNoti/:id", deleteNoti);
 router.post("/UpcomingEvent",UpcomingEvent);
-router.post('/create-checkout-session',createSessionForm)
+router.post('/checkout',checkout)
 router.get('/session-status',session_status );
 
 module.exports = router;
